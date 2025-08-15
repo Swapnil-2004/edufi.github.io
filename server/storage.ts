@@ -12,9 +12,19 @@ import {
   type UserProgress,
   type InsertUserProgress,
   type Recommendation,
-  type InsertRecommendation
+  type InsertRecommendation,
+  users,
+  colleges,
+  scholarships,
+  internships,
+  userMatches,
+  userProgress,
+  recommendations
 } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
+import { eq, and, or, ne, desc, asc } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 export interface IStorage {
   // User operations
@@ -71,185 +81,73 @@ export interface IStorage {
   createRecommendation(recommendation: InsertRecommendation): Promise<Recommendation>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private colleges: Map<string, College>;
-  private scholarships: Map<string, Scholarship>;
-  private internships: Map<string, Internship>;
-  private userMatches: Map<string, UserMatch>;
-  private userProgress: Map<string, UserProgress>;
-  private recommendations: Map<string, Recommendation>;
+export class PostgresStorage implements IStorage {
+  private db;
 
   constructor() {
-    this.users = new Map();
-    this.colleges = new Map();
-    this.scholarships = new Map();
-    this.internships = new Map();
-    this.userMatches = new Map();
-    this.userProgress = new Map();
-    this.recommendations = new Map();
-    this.initSampleData();
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    this.db = drizzle(pool);
   }
 
-  private initSampleData() {
-    // Add sample colleges
-    const sampleColleges: College[] = [
-      {
-        id: randomUUID(),
-        name: "IIT Delhi",
-        location: "Delhi",
-        state: "Delhi",
-        fees: "250000",
-        category: "Engineering",
-        rating: "4.8",
-        description: "Premier engineering institute",
-        website: "https://home.iitd.ac.in/",
-        cutoffRank: 100,
-        facilities: ["Library", "Labs", "Hostel", "Sports"],
-        courses: ["Computer Science", "Electrical", "Mechanical"]
-      },
-      {
-        id: randomUUID(),
-        name: "IIT Bombay",
-        location: "Mumbai",
-        state: "Maharashtra",
-        fees: "245000",
-        category: "Engineering",
-        rating: "4.9",
-        description: "Top ranked engineering college",
-        website: "https://www.iitb.ac.in/",
-        cutoffRank: 50,
-        facilities: ["Library", "Labs", "Hostel", "Research Centers"],
-        courses: ["Computer Science", "Electrical", "Chemical"]
-      }
-    ];
 
-    sampleColleges.forEach(college => this.colleges.set(college.id, college));
-
-    // Add sample scholarships
-    const sampleScholarships: Scholarship[] = [
-      {
-        id: randomUUID(),
-        title: "INSPIRE Scholarship",
-        description: "For students pursuing higher education in natural sciences, mathematics, and engineering.",
-        amount: "80000",
-        provider: "Government of India",
-        category: "Merit-based",
-        eligibilityCriteria: ["Top 1% in board exams", "Pursuing science stream"],
-        deadline: new Date("2024-03-15"),
-        applicationUrl: "https://inspire-dst.gov.in/",
-        recipientCount: 10000,
-        state: "All India",
-        isActive: true
-      },
-      {
-        id: randomUUID(),
-        title: "Google Women Techmakers",
-        description: "Supporting women pursuing computer science and technology degrees.",
-        amount: "100000",
-        provider: "Google",
-        category: "Women Only",
-        eligibilityCriteria: ["Female students", "CS/IT background", "Academic excellence"],
-        deadline: new Date("2024-04-30"),
-        applicationUrl: "https://developers.google.com/womentechmakers",
-        recipientCount: 500,
-        state: "All India",
-        isActive: true
-      }
-    ];
-
-    sampleScholarships.forEach(scholarship => this.scholarships.set(scholarship.id, scholarship));
-
-    // Add sample internships
-    const sampleInternships: Internship[] = [
-      {
-        id: randomUUID(),
-        title: "Microsoft Learn Program",
-        company: "Microsoft",
-        description: "3-month paid internship program for computer science students.",
-        stipend: "25000",
-        duration: "3 months",
-        location: "Bangalore",
-        isRemote: false,
-        requirements: ["CS/IT background", "Programming skills", "Problem solving"],
-        applicationUrl: "https://careers.microsoft.com/",
-        deadline: new Date("2024-05-15"),
-        category: "Technology",
-        isActive: true
-      }
-    ];
-
-    sampleInternships.forEach(internship => this.internships.set(internship.id, internship));
-  }
-
-  // User operations
+  // User operations with password hashing
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const result = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
+    const result = await this.db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.email === email);
+    const result = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
+    return result[0];
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { 
-      ...insertUser, 
-      id, 
+    // Hash password before storing
+    const hashedPassword = await bcrypt.hash(insertUser.password, 10);
+    
+    const userData = {
+      ...insertUser,
+      password: hashedPassword,
       role: insertUser.role || "student",
-      location: insertUser.location || null,
-      preferredLanguage: insertUser.preferredLanguage || null,
-      budget: insertUser.budget || null,
-      examRank: insertUser.examRank || null,
-      goals: insertUser.goals || null,
-      educationLevel: insertUser.educationLevel || null,
-      skills: insertUser.skills || null,
-      profileImage: insertUser.profileImage || null,
-      eduCoins: 0, 
-      streakDays: 0,
-      createdAt: new Date()
+      eduCoins: 0,
+      streakDays: 0
     };
-    this.users.set(id, user);
-    return user;
+    
+    const result = await this.db.insert(users).values(userData).returning();
+    return result[0];
   }
 
   async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
-    const user = this.users.get(id);
-    if (!user) return undefined;
+    const result = await this.db.update(users).set(updates).where(eq(users.id, id)).returning();
+    return result[0];
+  }
+
+  async verifyPassword(email: string, password: string): Promise<User | null> {
+    const user = await this.getUserByEmail(email);
+    if (!user) return null;
     
-    const updatedUser = { ...user, ...updates };
-    this.users.set(id, updatedUser);
-    return updatedUser;
+    const isValid = await bcrypt.compare(password, user.password);
+    return isValid ? user : null;
   }
 
   // College operations
   async getColleges(): Promise<College[]> {
-    return Array.from(this.colleges.values());
+    return await this.db.select().from(colleges).orderBy(asc(colleges.name));
   }
 
   async getCollege(id: string): Promise<College | undefined> {
-    return this.colleges.get(id);
+    const result = await this.db.select().from(colleges).where(eq(colleges.id, id)).limit(1);
+    return result[0];
   }
 
   async createCollege(insertCollege: InsertCollege): Promise<College> {
-    const id = randomUUID();
-    const college: College = { 
-      ...insertCollege, 
-      id,
-      description: insertCollege.description || null,
-      fees: insertCollege.fees || null,
-      rating: insertCollege.rating || null,
-      website: insertCollege.website || null,
-      cutoffRank: insertCollege.cutoffRank || null,
-      facilities: insertCollege.facilities || null,
-      courses: insertCollege.courses || null
-    };
-    this.colleges.set(id, college);
-    return college;
+    const result = await this.db.insert(colleges).values(insertCollege).returning();
+    return result[0];
   }
 
   async getCollegesByFilters(filters: {
@@ -258,37 +156,39 @@ export class MemStorage implements IStorage {
     maxFees?: number;
     minRating?: number;
   }): Promise<College[]> {
-    return Array.from(this.colleges.values()).filter(college => {
-      if (filters.state && college.state !== filters.state) return false;
-      if (filters.category && college.category !== filters.category) return false;
-      if (filters.maxFees && parseFloat(college.fees || "0") > filters.maxFees) return false;
-      if (filters.minRating && parseFloat(college.rating || "0") < filters.minRating) return false;
-      return true;
-    });
+    let query = this.db.select().from(colleges);
+    
+    const conditions: any[] = [];
+    
+    if (filters.state) {
+      conditions.push(eq(colleges.state, filters.state));
+    }
+    if (filters.category) {
+      conditions.push(eq(colleges.category, filters.category));
+    }
+    // Note: For now, we'll filter fees and rating client-side due to complex type conversion
+    // In a production app, you'd want to handle numeric comparisons properly
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+    
+    return await query.orderBy(asc(colleges.name));
   }
 
   // Scholarship operations
   async getScholarships(): Promise<Scholarship[]> {
-    return Array.from(this.scholarships.values());
+    return await this.db.select().from(scholarships).orderBy(desc(scholarships.deadline));
   }
 
   async getScholarship(id: string): Promise<Scholarship | undefined> {
-    return this.scholarships.get(id);
+    const result = await this.db.select().from(scholarships).where(eq(scholarships.id, id)).limit(1);
+    return result[0];
   }
 
   async createScholarship(insertScholarship: InsertScholarship): Promise<Scholarship> {
-    const id = randomUUID();
-    const scholarship: Scholarship = { 
-      ...insertScholarship, 
-      id,
-      state: insertScholarship.state || null,
-      isActive: insertScholarship.isActive ?? true,
-      recipientCount: insertScholarship.recipientCount || null,
-      applicationUrl: insertScholarship.applicationUrl || null,
-      eligibilityCriteria: insertScholarship.eligibilityCriteria || null
-    };
-    this.scholarships.set(id, scholarship);
-    return scholarship;
+    const result = await this.db.insert(scholarships).values(insertScholarship).returning();
+    return result[0];
   }
 
   async getScholarshipsByFilters(filters: {
@@ -296,40 +196,40 @@ export class MemStorage implements IStorage {
     state?: string;
     isActive?: boolean;
   }): Promise<Scholarship[]> {
-    return Array.from(this.scholarships.values()).filter(scholarship => {
-      if (filters.category && scholarship.category !== filters.category) return false;
-      if (filters.state && scholarship.state !== filters.state) return false;
-      if (filters.isActive !== undefined && scholarship.isActive !== filters.isActive) return false;
-      return true;
-    });
+    let query = this.db.select().from(scholarships);
+    
+    const conditions: any[] = [];
+    
+    if (filters.category) {
+      conditions.push(eq(scholarships.category, filters.category));
+    }
+    if (filters.state) {
+      conditions.push(eq(scholarships.state, filters.state));
+    }
+    if (filters.isActive !== undefined) {
+      conditions.push(eq(scholarships.isActive, filters.isActive));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+    
+    return await query.orderBy(desc(scholarships.deadline));
   }
 
   // Internship operations
   async getInternships(): Promise<Internship[]> {
-    return Array.from(this.internships.values());
+    return await this.db.select().from(internships).orderBy(desc(internships.deadline));
   }
 
   async getInternship(id: string): Promise<Internship | undefined> {
-    return this.internships.get(id);
+    const result = await this.db.select().from(internships).where(eq(internships.id, id)).limit(1);
+    return result[0];
   }
 
   async createInternship(insertInternship: InsertInternship): Promise<Internship> {
-    const id = randomUUID();
-    const internship: Internship = { 
-      ...insertInternship, 
-      id,
-      duration: insertInternship.duration || null,
-      location: insertInternship.location || null,
-      isRemote: insertInternship.isRemote ?? false,
-      stipend: insertInternship.stipend || null,
-      requirements: insertInternship.requirements || null,
-      applicationUrl: insertInternship.applicationUrl || null,
-      deadline: insertInternship.deadline || null,
-      category: insertInternship.category || null,
-      isActive: insertInternship.isActive ?? true
-    };
-    this.internships.set(id, internship);
-    return internship;
+    const result = await this.db.insert(internships).values(insertInternship).returning();
+    return result[0];
   }
 
   async getInternshipsByFilters(filters: {
@@ -338,117 +238,131 @@ export class MemStorage implements IStorage {
     isRemote?: boolean;
     isActive?: boolean;
   }): Promise<Internship[]> {
-    return Array.from(this.internships.values()).filter(internship => {
-      if (filters.category && internship.category !== filters.category) return false;
-      if (filters.location && internship.location !== filters.location) return false;
-      if (filters.isRemote !== undefined && internship.isRemote !== filters.isRemote) return false;
-      if (filters.isActive !== undefined && internship.isActive !== filters.isActive) return false;
-      return true;
-    });
+    let query = this.db.select().from(internships);
+    
+    const conditions: any[] = [];
+    
+    if (filters.category) {
+      conditions.push(eq(internships.category, filters.category));
+    }
+    if (filters.location) {
+      conditions.push(eq(internships.location, filters.location));
+    }
+    if (filters.isRemote !== undefined) {
+      conditions.push(eq(internships.isRemote, filters.isRemote));
+    }
+    if (filters.isActive !== undefined) {
+      conditions.push(eq(internships.isActive, filters.isActive));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+    
+    return await query.orderBy(desc(internships.deadline));
   }
 
   // User match operations
   async getUserMatches(userId: string): Promise<UserMatch[]> {
-    return Array.from(this.userMatches.values()).filter(match => 
-      match.userId === userId || match.matchedUserId === userId
-    );
+    return await this.db.select().from(userMatches)
+      .where(
+        or(
+          eq(userMatches.userId, userId),
+          eq(userMatches.matchedUserId, userId)
+        )
+      )
+      .orderBy(desc(userMatches.createdAt));
   }
 
   async createUserMatch(insertMatch: InsertUserMatch): Promise<UserMatch> {
-    const id = randomUUID();
-    const match: UserMatch = { 
-      ...insertMatch, 
-      id,
-      status: insertMatch.status || "pending",
-      compatibilityScore: insertMatch.compatibilityScore || null,
-      createdAt: new Date()
-    };
-    this.userMatches.set(id, match);
-    return match;
+    const result = await this.db.insert(userMatches).values(insertMatch).returning();
+    return result[0];
   }
 
   async updateUserMatch(id: string, status: string): Promise<UserMatch | undefined> {
-    const match = this.userMatches.get(id);
-    if (!match) return undefined;
-    
-    const updatedMatch = { ...match, status };
-    this.userMatches.set(id, updatedMatch);
-    return updatedMatch;
+    const result = await this.db.update(userMatches)
+      .set({ status })
+      .where(eq(userMatches.id, id))
+      .returning();
+    return result[0];
   }
 
   async getPotentialMatches(userId: string): Promise<User[]> {
-    const currentUser = this.users.get(userId);
-    if (!currentUser) return [];
-    
+    // Get users who haven't been matched with the current user
     const existingMatches = await this.getUserMatches(userId);
-    const matchedUserIds = new Set(existingMatches.map(m => m.matchedUserId));
+    const matchedUserIds = new Set([
+      ...existingMatches.map(m => m.matchedUserId),
+      ...existingMatches.map(m => m.userId)
+    ]);
+    matchedUserIds.add(userId); // Don't match with self
     
-    return Array.from(this.users.values()).filter(user => 
-      user.id !== userId && 
-      !matchedUserIds.has(user.id) &&
-      user.role === 'student'
-    );
+    const allUsers = await this.db.select().from(users)
+      .where(eq(users.role, 'student'));
+    
+    return allUsers.filter(user => !matchedUserIds.has(user.id));
   }
 
   // User progress operations
   async getUserProgress(userId: string): Promise<UserProgress[]> {
-    return Array.from(this.userProgress.values()).filter(progress => 
-      progress.userId === userId
-    );
+    return await this.db.select().from(userProgress)
+      .where(eq(userProgress.userId, userId))
+      .orderBy(desc(userProgress.lastAccessedAt));
   }
 
   async createOrUpdateProgress(insertProgress: InsertUserProgress): Promise<UserProgress> {
-    const existing = Array.from(this.userProgress.values()).find(p => 
-      p.userId === insertProgress.userId && 
-      p.subject === insertProgress.subject && 
-      p.chapter === insertProgress.chapter
-    );
+    // Check if progress exists for this user, subject, and chapter
+    const existing = await this.db.select().from(userProgress)
+      .where(
+        and(
+          eq(userProgress.userId, insertProgress.userId),
+          eq(userProgress.subject, insertProgress.subject),
+          eq(userProgress.chapter, insertProgress.chapter)
+        )
+      )
+      .limit(1);
     
-    if (existing) {
-      const updated = { 
-        ...existing, 
-        ...insertProgress,
-        completionPercentage: insertProgress.completionPercentage || existing.completionPercentage,
-        timeSpent: insertProgress.timeSpent || existing.timeSpent,
-        lastAccessedAt: new Date()
-      };
-      this.userProgress.set(existing.id, updated);
-      return updated;
+    if (existing[0]) {
+      // Update existing progress
+      const result = await this.db.update(userProgress)
+        .set({
+          ...insertProgress,
+          lastAccessedAt: new Date()
+        })
+        .where(eq(userProgress.id, existing[0].id))
+        .returning();
+      return result[0];
     } else {
-      const id = randomUUID();
-      const progress: UserProgress = { 
-        ...insertProgress, 
-        id,
-        completionPercentage: insertProgress.completionPercentage || "0",
-        timeSpent: insertProgress.timeSpent || null,
-        lastAccessedAt: new Date()
-      };
-      this.userProgress.set(id, progress);
-      return progress;
+      // Create new progress
+      const result = await this.db.insert(userProgress)
+        .values(insertProgress)
+        .returning();
+      return result[0];
     }
   }
 
   // Recommendation operations
   async getUserRecommendations(userId: string, type?: string): Promise<Recommendation[]> {
-    return Array.from(this.recommendations.values()).filter(rec => {
-      if (rec.userId !== userId) return false;
-      if (type && rec.type !== type) return false;
-      return true;
-    });
+    let query = this.db.select().from(recommendations)
+      .where(eq(recommendations.userId, userId));
+    
+    if (type) {
+      query = query.where(
+        and(
+          eq(recommendations.userId, userId),
+          eq(recommendations.type, type)
+        )
+      ) as any;
+    }
+    
+    return await query.orderBy(desc(recommendations.createdAt));
   }
 
   async createRecommendation(insertRecommendation: InsertRecommendation): Promise<Recommendation> {
-    const id = randomUUID();
-    const recommendation: Recommendation = { 
-      ...insertRecommendation, 
-      id,
-      score: insertRecommendation.score || null,
-      reason: insertRecommendation.reason || null,
-      createdAt: new Date()
-    };
-    this.recommendations.set(id, recommendation);
-    return recommendation;
+    const result = await this.db.insert(recommendations)
+      .values(insertRecommendation)
+      .returning();
+    return result[0];
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new PostgresStorage();

@@ -26,9 +26,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email, password } = req.body;
-      const user = await storage.getUserByEmail(email);
+      const user = await storage.verifyPassword(email, password);
       
-      if (!user || user.password !== password) {
+      if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
@@ -213,6 +213,154 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(recommendations);
     } catch (error) {
       res.status(500).json({ message: "Failed to get recommendations", error });
+    }
+  });
+
+  // Seed database route (development only)
+  app.post("/api/seed", async (req, res) => {
+    try {
+      // Sample colleges data
+      const colleges = [
+        {
+          name: "Indian Institute of Technology Delhi",
+          category: "Engineering",
+          fees: "208000",
+          rating: "4.8",
+          state: "Delhi",
+          location: "New Delhi",
+          description: "Premier engineering institute known for excellence in technology and research. Admission through JEE Advanced.",
+          courses: ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Chemical Engineering"],
+          facilities: ["Library", "Hostels", "Labs", "Sports Complex", "Cafeteria"]
+        },
+        {
+          name: "All India Institute of Medical Sciences",
+          category: "Medical",
+          fees: "75000",
+          rating: "4.9",
+          state: "Delhi",
+          location: "New Delhi",
+          description: "India's premier medical institute offering world-class medical education. Admission through NEET.",
+          courses: ["MBBS", "MD", "MS", "DM", "MCh"],
+          facilities: ["Hospital", "Research Labs", "Library", "Hostels", "Sports"]
+        },
+        {
+          name: "Indian Institute of Science",
+          category: "Science",
+          fees: "125000",
+          rating: "4.9",
+          state: "Karnataka",
+          location: "Bangalore",
+          description: "Leading research institution in science and engineering. Admission through KVPY/JEE Advanced/GATE.",
+          courses: ["Physics", "Chemistry", "Biology", "Mathematics", "Computer Science"],
+          facilities: ["Research Labs", "Library", "Hostels", "Cafeteria"]
+        }
+      ];
+
+      const scholarships = [
+        {
+          title: "PM YASASVI Scholarship 2024",
+          description: "Scholarship for OBC, EBC, and DNT students studying in Class 9-12. Provides financial assistance for academic excellence.",
+          category: "Merit-based",
+          amount: "125000",
+          provider: "National Testing Agency",
+          eligibilityCriteria: {"caste": "OBC/EBC/DNT", "class": "9-12", "familyIncome": "< 2.5 lakh"},
+          deadline: new Date("2024-12-31"),
+          state: "All India",
+          recipientCount: 15000,
+          isActive: true,
+          applicationUrl: "https://yet.nta.ac.in/"
+        },
+        {
+          title: "National Scholarship Portal Merit Scholarship",
+          description: "Central sector scholarship for meritorious students pursuing higher education.",
+          category: "Merit-based",
+          amount: "200000",
+          provider: "Ministry of Education",
+          eligibilityCriteria: {"marks": "80%+ in Class 12", "familyIncome": "< 6 lakh"},
+          deadline: new Date("2024-10-30"),
+          state: "All India",
+          recipientCount: 82000,
+          isActive: true,
+          applicationUrl: "https://scholarships.gov.in/"
+        }
+      ];
+
+      const internships = [
+        {
+          title: "Google Summer of Code 2024",
+          description: "Global program where students work on open source projects with mentoring organizations.",
+          category: "Technology",
+          company: "Google",
+          location: "Remote",
+          duration: "3 months",
+          stipend: "200000",
+          deadline: new Date("2024-03-18"),
+          isRemote: true,
+          isActive: true,
+          applicationUrl: "https://summerofcode.withgoogle.com/"
+        },
+        {
+          title: "Microsoft Research India Internship",
+          description: "Research internship program for students in computer science and related fields.",
+          category: "Technology",
+          company: "Microsoft",
+          location: "Bangalore",
+          duration: "2-6 months",
+          stipend: "75000",
+          deadline: new Date("2024-02-28"),
+          isRemote: false,
+          isActive: true,
+          applicationUrl: "https://www.microsoft.com/en-us/research/academic-program/internships/"
+        }
+      ];
+
+      // Check if data already exists
+      const existingColleges = await storage.getColleges();
+      const existingScholarships = await storage.getScholarships();
+      const existingInternships = await storage.getInternships();
+
+      let message = "Database seeded successfully! ";
+
+      // Seed colleges
+      if (existingColleges.length === 0) {
+        for (const college of colleges) {
+          await storage.createCollege(college);
+        }
+        message += `Added ${colleges.length} colleges. `;
+      } else {
+        message += `${existingColleges.length} colleges already exist. `;
+      }
+
+      // Seed scholarships
+      if (existingScholarships.length === 0) {
+        for (const scholarship of scholarships) {
+          await storage.createScholarship(scholarship);
+        }
+        message += `Added ${scholarships.length} scholarships. `;
+      } else {
+        message += `${existingScholarships.length} scholarships already exist. `;
+      }
+
+      // Seed internships
+      if (existingInternships.length === 0) {
+        for (const internship of internships) {
+          await storage.createInternship(internship);
+        }
+        message += `Added ${internships.length} internships.`;
+      } else {
+        message += `${existingInternships.length} internships already exist.`;
+      }
+
+      res.json({ 
+        message,
+        summary: {
+          colleges: (await storage.getColleges()).length,
+          scholarships: (await storage.getScholarships()).length,
+          internships: (await storage.getInternships()).length
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to seed database", error });
     }
   });
 
