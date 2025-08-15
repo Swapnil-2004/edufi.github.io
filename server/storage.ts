@@ -21,8 +21,8 @@ import {
   userProgress,
   recommendations
 } from "@shared/schema";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { Pool } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import { eq, and, or, ne, desc, asc } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
@@ -85,8 +85,9 @@ export class PostgresStorage implements IStorage {
   private db;
 
   constructor() {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    this.db = drizzle(pool);
+    const connectionString = process.env.DATABASE_URL!;
+    const sql = postgres(connectionString, { ssl: 'allow' });
+    this.db = drizzle(sql);
   }
 
 
@@ -346,12 +347,11 @@ export class PostgresStorage implements IStorage {
       .where(eq(recommendations.userId, userId));
     
     if (type) {
-      query = query.where(
-        and(
-          eq(recommendations.userId, userId),
-          eq(recommendations.type, type)
-        )
-      ) as any;
+      const conditions = [
+        eq(recommendations.userId, userId),
+        eq(recommendations.type, type)
+      ];
+      query = this.db.select().from(recommendations).where(and(...conditions));
     }
     
     return await query.orderBy(desc(recommendations.createdAt));
