@@ -1,0 +1,126 @@
+Design a modern, visually appealing, responsive, and student-friendly UI/UX for a GenAI-powered educational platform called EduFi.
+
+EduFi is an AI-based mentor for students that offers:
+
+Personalized college and course recommendations
+
+Budget-based academic planning
+
+Scholarship and internship discovery
+
+Peer collaboration via a “Tinder for teams” feature (EduSwipe)
+
+Multilingual access and inclusive design
+
+🖼️ Target Audience:
+
+Students aged 14–25 in India
+
+From Tier 2 & 3 cities with different language preferences
+
+Preparing for competitive exams, college admissions, or projects
+
+🧠 Design Goals:
+
+Easy-to-use for first-time users
+
+Warm and engaging aesthetic (color palette: sky blue, green, white)
+
+Responsive for mobile and desktop
+
+Intuitive navigation with progressive disclosure
+
+GenAI-friendly interface: focus on chat interactions, visual charts, and recommendation cards
+
+📄 Key Pages to Design:
+1. Home Page
+
+Tagline banner: "From classroom to career – guided by AI."
+
+Animated or scrollable preview of EduFi features
+
+Buttons: “Start My Journey”, “Explore Features”, “Login”
+
+2. Login / Signup Page
+
+Multi-step student onboarding form
+
+Inputs: budget, exam rank, preferred language, goals
+
+Language switch toggle (English / Hindi / Bengali for MVP)
+
+Option for voice input (microphone icon)
+
+3. Dashboard (Post Login)
+
+Welcome message with user name and profile stats
+
+AI-generated roadmap (display with timeline / progress chart)
+
+Cards showing recommended colleges/coaching/scholarships
+
+“Track Progress” widget using gamified EduCoins and badges
+
+4. EduSwipe Page
+
+Swiper-style interface (like Tinder) for team formation
+
+Card layout: user photo, verified skills (with badge icons), location, compatibility score
+
+“Swipe Right” and “Swipe Left” buttons
+
+Filters panel: skills, location, goal type
+
+5. Scholarship/Internship Page
+
+Search bar with filters: location, category, deadline
+
+List view or grid of upcoming opportunities
+
+Bookmark and Apply buttons
+
+6. Features Page
+
+Visual sections for each major feature (with icons/illustrations):
+
+AI College Matching
+
+Financial Planner
+
+Skill Collaboration (EduSwipe)
+
+Visual Roadmaps
+
+Multilingual/Voice Input
+
+7. Coming Soon Preview
+
+Teaser section for “AI Buddy” – emotional support chatbot
+
+Offline mode banner
+
+Voice assistant integration sneak peek
+
+8. Footer
+
+Links: About, Privacy Policy, Contact
+
+Social media icons
+
+“Built by students, for students” tagline
+
+💡 Additional UI/UX Elements to Include:
+
+Mobile-first card layouts
+
+Soft rounded corners for all elements
+
+Consistent use of icons and visual cues
+
+High accessibility: readable fonts, adequate spacing, ALT text support
+
+Animate the roadmap/chart visuals where possible
+
+Realistic student avatars and badge icons for credibility
+
+Design Format Preference: Use layout grid for components, and break up the screens by task flow (e.g., Onboarding > Dashboard > Matching > Tracking). Feel free to add micro-interactions and gamification cues.
