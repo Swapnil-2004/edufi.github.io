@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduFi - Your AI Mentor to Learn, Earn & Succeed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        'sky-blue': '#0ea5e9',
+                        'emerald-green': '#10b981',
+                        'light-green': '#059669',
+                        'warm-orange': '#f59e0b'
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.6s ease-out'
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="font-inter bg-slate-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold text-slate-800">EduFi</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-slate-600 hover:text-sky-blue font-medium">Home</a>
+                    <a href="#features" class="text-slate-600 hover:text-sky-blue font-medium">Features</a>
+                    <a href="#eduswipe" class="text-slate-600 hover:text-sky-blue font-medium">EduSwipe</a>
+                    <a href="#scholarships" class="text-slate-600 hover:text-sky-blue font-medium">Scholarships</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- Language Switcher -->
+                    <div class="relative">
+                        <select class="bg-slate-100 text-slate-700 px-3 py-1 rounded-lg text-sm border-none focus:ring-2 focus:ring-sky-blue">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी</option>
+                            <option value="bn">বাংলা</option>
+                        </select>
+                    </div>
+                    
+                    <button class="text-slate-600 hover:text-sky-blue">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    
+                    <button class="bg-sky-blue text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors font-medium">
+                        Login
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button class="text-slate-600 hover:text-slate-800">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="gradient-bg py-20 lg:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="text-center lg:text-left animate-slide-up">
+                    <h1 class="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                        From classroom to career – 
+                        <span class="text-yellow-300">let AI guide you</span>
+                    </h1>
+                    <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+                        Your personalized AI mentor for academic success, budget-friendly planning, and career growth. Discover scholarships, find teammates, and build your future.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <button class="bg-white text-sky-blue px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 transition-colors shadow-lg">
+                            Start My Journey
+                        </button>
+                        <button class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-sky-blue transition-colors">
+                            Explore Features
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Hero Illustration -->
+                <div class="relative animate-fade-in">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 animate-float">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white/20 rounded-xl p-4 text-center">
+                                <i class="fas fa-brain text-yellow-300 text-2xl mb-2"></i>
+                                <p class="text-white text-sm font-medium">AI Recommendations</p>
+                            </div>
+                            <div class="bg-white/20 rounded-xl p-4 text-center">
+                                <i class="fas fa-users text-green-300 text-2xl mb-2"></i>
+                                <p class="text-white text-sm font-medium">Team Matching</p>
+                            </div>
+                            <div class="bg-white/20 rounded-xl p-4 text-center">
+                                <i class="fas fa-scholarship text-orange-300 text-2xl mb-2"></i>
+                                <p class="text-white text-sm font-medium">Scholarships</p>
+                            </div>
+                            <div class="bg-white/20 rounded-xl p-4 text-center">
+                                <i class="fas fa-chart-line text-purple-300 text-2xl mb-2"></i>
+                                <p class="text-white text-sm font-medium">Progress Tracking</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Floating elements -->
+                    <div class="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center animate-float" style="animation-delay: -2s;">
+                        <i class="fas fa-star text-white text-xl"></i>
+                    </div>
+                    <div class="absolute -bottom-4 -left-4 w-12 h-12 bg-green-400 rounded-full flex items-center justify-center animate-float" style="animation-delay: -4s;">
+                        <i class="fas fa-lightbulb text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Preview -->
+    <section id="features" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+                    Powerful Features for Your Success
+                </h2>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+                    AI-powered tools designed specifically for Indian students to excel academically and financially
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature Card 1 -->
+                <div class="bg-gradient-to-br from-sky-50 to-blue-50 p-6 rounded-2xl card-hover">
+                    <div class="w-12 h-12 bg-sky-blue rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-university text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Smart College Matching</h3>
+                    <p class="text-slate-600 mb-4">Get personalized college recommendations based on your budget, rank, and career goals.</p>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li class="flex items-center"><i class="fas fa-check text-emerald-green mr-2"></i>Budget-aware suggestions</li>
+                        <li class="flex items-center"><i class="fas fa-check text-emerald-green mr-2"></i>Rank-based filtering</li>
+                        <li class="flex items-center"><i class="fas fa-check text-emerald-green mr-2"></i>Location preferences</li>
+                    </ul>
+                </div>
+
+                <!-- Feature Card 2 -->
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-2xl card-hover">
+                    <div class="w-12 h-12 bg-emerald-green rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-route text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Visual Goal Roadmaps</h3>
+                    <p class="text-slate-600 mb-4">AI-generated personalized learning paths with clear milestones and timelines.</p>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li class="flex items-center"><i class="fas fa-check text-emerald-green mr-2"></i>Step-by-step guidance</li>
+                        <li class="flex items-center"><i class="fas fa-check text-emerald-green mr-2"></i>Progress tracking</li>
+                        <li class="flex items-center"><i class="fas fa-check text-emerald-green mr-2"></i>Milestone rewards</li>
+                    </ul>
+                </div>
+
+                <!-- Feature Card 3 -->
+                <div class="bg-gradient-to-br from-orange-50 to-yellow-50 p-6 rounded-2xl card-hover">
+                    <div class="w-12 h-12 bg-warm-orange rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-search-dollar text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Scholarship Discovery</h3>
+                    <p class="text-slate-600 mb-4">Find and apply to scholarships and internships tailored to your profile.</p>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li class="flex items-center"><i class="fas fa-check text-emerald-green mr-2"></i>Real-time opportunities</li>
+                        <li class="flex items-center"><i class="fas fa-check text-emerald-green mr-2"></i>Deadline reminders</li>
+                        <li class="flex items-center"><i class="fas fa-check text-emerald-green mr-2"></i>Application tracking</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EduSwipe Section -->
+    <section id="eduswipe" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl lg:text-4xl font-bold text-slate-800 mb-6">
+                        EduSwipe: Find Your Perfect Study Buddy
+                    </h2>
+                    <p class="text-xl text-slate-600 mb-8">
+                        Discover teammates with complementary skills for projects, competitions, and study groups. Our AI matches you based on compatibility scores and verified skills.
+                    </p>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-emerald-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-white text-sm"></i>
+                            </div>
+                            <span class="text-slate-700">Skill verification with blockchain badges</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-sky-blue rounded-full flex items-center justify-center">
+                                <i class="fas fa-brain text-white text-sm"></i>
+                            </div>
+                            <span class="text-slate-700">AI-powered compatibility scoring</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-filter text-white text-sm"></i>
+                            </div>
+                            <span class="text-slate-700">Advanced filters by skills and location</span>
+                        </div>
+                    </div>
+
+                    <button class="bg-gradient-to-r from-sky-blue to-emerald-green text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-shadow">
+                        Try EduSwipe Now
+                    </button>
+                </div>
+
+                <!-- EduSwipe Mockup -->
+                <div class="relative">
+                    <div class="bg-white rounded-3xl shadow-2xl p-6 max-w-sm mx-auto">
+                        <!-- Card Stack -->
+                        <div class="relative h-96">
+                            <!-- Card 3 (background) -->
+                            <div class="absolute inset-0 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl transform rotate-3 opacity-60"></div>
+                            
+                            <!-- Card 2 (middle) -->
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl transform rotate-1 opacity-80"></div>
+                            
+                            <!-- Card 1 (front) -->
+                            <div class="absolute inset-0 bg-white rounded-2xl shadow-lg border-2 border-slate-100">
+                                <div class="p-6 h-full flex flex-col">
+                                    <!-- Profile Image -->
+                                    <!-- A profile photo of a young Indian female student smiling confidently -->
+                                    <img src="https://pixabay.com/get/g2b009062cb6720f2d6a00c6c4ba4a0594d9a269b1660b80a655eea368741812e7cc4ca4c9d0f610ca0b450558dbcc4346a6679f46984aea4253bd1c341bd3ec9_1280.jpg" 
+                                         alt="Student profile" 
+                                         class="w-20 h-20 rounded-full mx-auto mb-4 object-cover" />
+                                    
+                                    <h3 class="text-xl font-semibold text-center text-slate-800 mb-2">Priya Sharma</h3>
+                                    <p class="text-center text-slate-600 text-sm mb-4">Computer Science • Delhi</p>
+                                    
+                                    <!-- Compatibility Score -->
+                                    <div class="bg-emerald-50 rounded-xl p-3 mb-4">
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <span class="text-2xl font-bold text-emerald-green">94%</span>
+                                            <span class="text-emerald-700 text-sm">Match</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Skills -->
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-slate-700 mb-2">Verified Skills</h4>
+                                        <div class="flex flex-wrap gap-2 mb-4">
+                                            <span class="bg-sky-100 text-sky-700 px-3 py-1 rounded-full text-xs">Python</span>
+                                            <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs">React</span>
+                                            <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs">Design</span>
+                                        </div>
+                                        
+                                        <div class="text-sm text-slate-600">
+                                            Looking for: Web Dev teammates for hackathons
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Swipe Buttons -->
+                        <div class="flex justify-center space-x-4 mt-6">
+                            <button class="w-14 h-14 bg-red-100 text-red-500 rounded-full flex items-center justify-center hover:bg-red-200 transition-colors">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                            <button class="w-14 h-14 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center hover:bg-emerald-200 transition-colors">
+                                <i class="fas fa-heart text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+                    Your Personalized Learning Dashboard
+                </h2>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+                    Track your progress, manage goals, and stay motivated with our gamified learning experience
+                </p>
+            </div>
+
+            <div class="bg-slate-50 rounded-3xl p-8 shadow-xl">
+                <!-- Dashboard Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Welcome back, Arjun!</h3>
+                        <p class="text-slate-600">You're 73% closer to your JEE Main goal 🎯</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                        <div class="bg-warm-orange text-white px-4 py-2 rounded-xl flex items-center space-x-2">
+                            <i class="fas fa-coins"></i>
+                            <span class="font-semibold">1,245 EduCoins</span>
+                        </div>
+                        <div class="bg-emerald-green text-white px-4 py-2 rounded-xl flex items-center space-x-2">
+                            <i class="fas fa-streak"></i>
+                            <span class="font-semibold">12 Day Streak</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Progress Chart -->
+                    <div class="md:col-span-2">
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <h4 class="text-lg font-semibold text-slate-800 mb-4">Your Learning Roadmap</h4>
+                            <div class="relative">
+                                <!-- Progress Timeline -->
+                                <div class="flex items-center justify-between mb-6">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-10 h-10 bg-emerald-green rounded-full flex items-center justify-center text-white font-semibold mb-2">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <span class="text-xs text-slate-600">Foundation</span>
+                                    </div>
+                                    <div class="flex-1 h-1 bg-emerald-green mx-2"></div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-10 h-10 bg-emerald-green rounded-full flex items-center justify-center text-white font-semibold mb-2">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <span class="text-xs text-slate-600">Intermediate</span>
+                                    </div>
+                                    <div class="flex-1 h-1 bg-sky-blue mx-2"></div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-10 h-10 bg-sky-blue rounded-full flex items-center justify-center text-white font-semibold mb-2">
+                                            73%
+                                        </div>
+                                        <span class="text-xs text-slate-600">Advanced</span>
+                                    </div>
+                                    <div class="flex-1 h-1 bg-slate-200 mx-2"></div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-400 font-semibold mb-2">
+                                            4
+                                        </div>
+                                        <span class="text-xs text-slate-600">Test Prep</span>
+                                    </div>
+                                </div>
+
+                                <!-- Current Focus -->
+                                <div class="bg-sky-50 rounded-xl p-4">
+                                    <h5 class="font-medium text-slate-800 mb-2">Current Focus: Calculus Integration</h5>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mb-2">
+                                        <div class="bg-sky-blue h-2 rounded-full" style="width: 73%"></div>
+                                    </div>
+                                    <p class="text-sm text-slate-600">3 of 4 chapters completed • Est. 2 days remaining</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <h4 class="text-lg font-semibold text-slate-800 mb-4">Recommended for You</h4>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
+                                    <div class="w-8 h-8 bg-sky-blue rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-university text-white text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-sm text-slate-800">IIT Delhi</p>
+                                        <p class="text-xs text-slate-600">96% match • ₹2.5L fees</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
+                                    <div class="w-8 h-8 bg-emerald-green rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-scholarship text-white text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-sm text-slate-800">INSPIRE Scholarship</p>
+                                        <p class="text-xs text-slate-600">Deadline: 15 days</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
+                                    <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-users text-white text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-sm text-slate-800">Study Group</p>
+                                        <p class="text-xs text-slate-600">5 new matches</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scholarships Section -->
+    <section id="scholarships" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-slate-800 mb-4">
+                    Discover Scholarships & Opportunities
+                </h2>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+                    Find financial aid and internships tailored to your profile with AI-powered matching
+                </p>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm mb-12">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <input type="text" placeholder="Search scholarships, internships..." 
+                                   class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-blue focus:border-transparent">
+                            <i class="fas fa-search absolute left-4 top-4 text-slate-400"></i>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <select class="px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-blue">
+                            <option>All Categories</option>
+                            <option>Engineering</option>
+                            <option>Medical</option>
+                            <option>Arts</option>
+                        </select>
+                        <select class="px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-blue">
+                            <option>All States</option>
+                            <option>Delhi</option>
+                            <option>Maharashtra</option>
+                            <option>Karnataka</option>
+                        </select>
+                        <button class="bg-sky-blue text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition-colors">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scholarship Cards -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Scholarship 1 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm card-hover">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-white text-xl"></i>
+                        </div>
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Merit-based</span>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-slate-800 mb-2">INSPIRE Scholarship</h3>
+                    <p class="text-slate-600 mb-4">For students pursuing higher education in natural sciences, mathematics, and engineering.</p>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-rupee-sign w-4"></i>
+                            <span>₹80,000 per year</span>
+                        </div>
+                        <div class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-calendar w-4"></i>
+                            <span>Deadline: March 15, 2024</span>
+                        </div>
+                        <div class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-users w-4"></i>
+                            <span>10,000 recipients</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <button class="text-sky-blue hover:text-blue-600 font-medium">
+                            <i class="fas fa-bookmark mr-1"></i> Save
+                        </button>
+                        <button class="bg-sky-blue text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scholarship 2 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm card-hover">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-female text-white text-xl"></i>
+                        </div>
+                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">Women Only</span>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-slate-800 mb-2">Google Women Techmakers</h3>
+                    <p class="text-slate-600 mb-4">Supporting women pursuing computer science and technology degrees.</p>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-rupee-sign w-4"></i>
+                            <span>₹1,00,000 per year</span>
+                        </div>
+                        <div class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-calendar w-4"></i>
+                            <span>Deadline: April 30, 2024</span>
+                        </div>
+                        <div class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-users w-4"></i>
+                            <span>500 recipients</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <button class="text-sky-blue hover:text-blue-600 font-medium">
+                            <i class="fas fa-bookmark mr-1"></i> Save
+                        </button>
+                        <button class="bg-sky-blue text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Internship -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm card-hover">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-briefcase text-white text-xl"></i>
+                        </div>
+                        <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-medium">Internship</span>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-slate-800 mb-2">Microsoft Learn Program</h3>
+                    <p class="text-slate-600 mb-4">3-month paid internship program for computer science students.</p>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-rupee-sign w-4"></i>
+                            <span>₹25,000 per month</span>
+                        </div>
+                        <div class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-calendar w-4"></i>
+                            <span>Apply by: May 15, 2024</span>
+                        </div>
+                        <div class="flex items-center text-sm text-slate-600">
+                            <i class="fas fa-map-marker-alt w-4"></i>
+                            <span>Remote/Bangalore</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <button class="text-sky-blue hover:text-blue-600 font-medium">
+                            <i class="fas fa-bookmark mr-1"></i> Save
+                        </button>
+                        <button class="bg-sky-blue text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <button class="bg-gradient-to-r from-sky-blue to-emerald-green text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-shadow">
+                    View All Opportunities
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Buddy Coming Soon -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl p-8 lg:p-12 text-center text-white">
+                <div class="max-w-3xl mx-auto">
+                    <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-robot text-3xl"></i>
+                    </div>
+                    
+                    <h2 class="text-3xl lg:text-4xl font-bold mb-6">
+                        Meet Your AI Buddy - Coming Soon!
+                    </h2>
+                    <p class="text-xl mb-8 text-purple-100">
+                        Get ready for 24/7 emotional support, motivational coaching, and voice-powered assistance. Your personal AI mentor that understands your journey.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white/10 rounded-2xl p-6">
+                            <i class="fas fa-comments text-2xl mb-3"></i>
+                            <h3 class="font-semibold mb-2">Smart Conversations</h3>
+                            <p class="text-sm text-purple-100">Chat with AI that understands your academic stress</p>
+                        </div>
+                        <div class="bg-white/10 rounded-2xl p-6">
+                            <i class="fas fa-microphone text-2xl mb-3"></i>
+                            <h3 class="font-semibold mb-2">Voice Assistant</h3>
+                            <p class="text-sm text-purple-100">Speak in Hindi, Bengali, or English - we understand all</p>
+                        </div>
+                        <div class="bg-white/10 rounded-2xl p-6">
+                            <i class="fas fa-heart text-2xl mb-3"></i>
+                            <h3 class="font-semibold mb-2">Emotional Support</h3>
+                            <p class="text-sm text-purple-100">Motivation and guidance when you need it most</p>
+                        </div>
+                    </div>
+                    
+                    <button class="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 transition-colors">
+                        Get Notified When Ready
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 gradient-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6">
+                Ready to Transform Your Educational Journey?
+            </h2>
+            <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+                Join thousands of students who are already using AI to achieve their academic and career goals
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-sky-blue px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 transition-colors shadow-lg">
+                    Start My Journey
+                </button>
+                <button class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-sky-blue transition-colors">
+                    Watch Demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold">EduFi</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">Your AI mentor for academic success, built by students, for students.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-slate-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-white transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold mb-4">Features</h3>
+                    <ul class="space-y-2 text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">AI College Matching</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Scholarship Discovery</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">EduSwipe</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Progress Tracking</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Multilingual Support</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold mb-4">Resources</h3>
+                    <ul class="space-y-2 text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Study Guides</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Career Advice</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Success Stories</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold mb-4">Company</h3>
+                    <ul class="space-y-2 text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-700 mt-12 pt-8 text-center text-slate-400">
+                <p>Built with ❤️ by the EduFi Team • © 2024 EduFi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // TODO: Implement interactive functionality
+        (function() {
+            // Mobile menu toggle
+            // TODO: Add mobile menu functionality
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Language switcher functionality
+            // TODO: Implement multilingual content switching
+            
+            // Voice input functionality
+            // TODO: Integrate with Google Speech-to-Text API
+            
+            // EduSwipe card interactions
+            // TODO: Implement swipe gestures and card stack management
+            
+            // Progress tracking animations
+            // TODO: Add animated progress bars and milestone celebrations
+            
+            // Search and filter functionality
+            // TODO: Implement real-time search and filtering for scholarships
+        })();
+    </script>
+</body>
+</html>
